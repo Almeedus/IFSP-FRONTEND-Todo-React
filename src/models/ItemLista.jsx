@@ -1,15 +1,14 @@
-export const tarefas = [];
+import React from "react";
 
-export default function ItemLista({ tarefas, onExcluir }) {
-  const tarefaListada = tarefas.map((tarefa, index) => (
-    <li key={index}>
-      {tarefa} <button onClick={() => onExcluir(index)}>Excluir</button>
-    </li>
-  ));
-
+function ItemLista({ todo, toggleComplete }) {
   return (
-    <div>
-      <ol>{tarefaListada}</ol>
-    </div>
+    <li
+      style={{ textDecoration: todo.completed ? "line-through" : "none" }}
+      onClick={() => toggleComplete(todo.id)}
+    >
+      {todo.todo}
+    </li>
   );
 }
+
+export default ItemLista;

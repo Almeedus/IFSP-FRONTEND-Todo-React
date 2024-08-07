@@ -1,22 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./styles.css";
 import ItemLista from "./models/ItemLista";
-import Formulario from "./models/Formulario";
 
-export default function App() {
-  const [tarefas, setTarefas] = useState([]);
+function App() {
+  const [todos, setTodos] = useState([]);
 
-  const adicionarTarefa = (novaTarefa) => {
-    setTarefas([...tarefas, novaTarefa]);
-  };
+  useEffect(() => {
+    axios
+      .get("https://dummyjson.com/todos")
+      .then((response) => {
+        setTodos(response.data.todos);
+      })
+      .catch((error) => {
+        console.error("Error fetching todos:", error);
+      });
+  }, []);
 
-  const excluirTarefa = (index) => {
-    setTarefas(tarefas.filter((_, i) => i !== index));
+  const toggleComplete = (id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
   };
 
   return (
-    <div>
-      <Formulario onAdd={adicionarTarefa} />
-      <ItemLista tarefas={tarefas} onExcluir={excluirTarefa} />
+    <div className="App">
+      <h1>Todo List</h1>
+      <ul>
+        {todos.map((todo) => (
+          <ItemLista
+            key={todo.id}
+            todo={todo}
+            toggleComplete={toggleComplete}
+          />
+        ))}
+      </ul>
     </div>
   );
 }
+
+export default App;
